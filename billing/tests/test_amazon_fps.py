@@ -1,6 +1,6 @@
 from xml.dom import minidom
 try:
-    from urlparse import urlparse, parse_qsl
+    from urllib.parse import urlparse, parse_qsl
 except ImportError:
     from urllib.parse import urlparse, parse_qsl
 
@@ -36,9 +36,9 @@ class AmazonFPSTestCase(TestCase):
         parsed = urlparse(url)
         query_dict = dict(parse_qsl(parsed.query))
 
-        self.assertEquals(parsed.scheme, 'https')
-        self.assertEquals(parsed.netloc, 'authorize.payments-sandbox.amazon.com')
-        self.assertEquals(parsed.path, '/cobranded-ui/actions/start')
+        self.assertEqual(parsed.scheme, 'https')
+        self.assertEqual(parsed.netloc, 'authorize.payments-sandbox.amazon.com')
+        self.assertEqual(parsed.path, '/cobranded-ui/actions/start')
 
         self.assertDictContainsSubset(self.fields, query_dict)
-        self.assertEquals(query_dict['callerKey'], settings.MERCHANT_SETTINGS['amazon_fps']['AWS_ACCESS_KEY'])
+        self.assertEqual(query_dict['callerKey'], settings.MERCHANT_SETTINGS['amazon_fps']['AWS_ACCESS_KEY'])

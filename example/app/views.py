@@ -435,8 +435,8 @@ def offsite_ogone(request):
         # Required
         # orderID needs to be unique per transaction.
         'orderID': randomword(6),
-        'currency': u'INR',
-        'amount': u'10000',  # 100.00
+        'currency': 'INR',
+        'amount': '10000',  # 100.00
         'language': 'en_US',
 
         # Optional; Can be configured in Ogone Account:

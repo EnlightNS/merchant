@@ -1,6 +1,11 @@
-from django.utils.importlib import import_module
+try:
+    # Django versions >= 1.9
+    from django.utils.module_loading import import_module
+except ImportError:
+    # Django versions < 1.9
+    from django.utils.importlib import import_module
+
 from django.conf import settings
-from django.conf.urls import patterns
 
 
 class IntegrationModuleNotFound(Exception):
@@ -37,7 +42,7 @@ class Integration(object):
         self.fields[key] = value
 
     def add_fields(self, params):
-        for (key, val) in params.items():
+        for (key, val) in list(params.items()):
             self.add_field(key, val)
 
     @property
@@ -47,7 +52,7 @@ class Integration(object):
 
     def get_urls(self):
         # Method must be subclassed
-        urlpatterns = patterns('')
+        urlpatterns = []
         return urlpatterns
 
     @property

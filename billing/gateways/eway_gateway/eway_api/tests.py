@@ -1,10 +1,10 @@
-from __future__ import print_function
+
 import unittest
 
 from datetime import datetime, timedelta
 from suds import WebFault
 
-from client import RebillEwayClient, HOSTED_TEST_URL
+from .client import RebillEwayClient, HOSTED_TEST_URL
 
 # uncomment to enable debugging
 #import logging

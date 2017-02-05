@@ -25,10 +25,10 @@ class BraintreePaymentsGatewayTestCase(TestCase):
             standardMsg = resp['response'].message
             self.fail(self._formatMessage(msg, standardMsg))
         else:
-            self.assertEquals(resp['status'], "SUCCESS")
+            self.assertEqual(resp['status'], "SUCCESS")
 
     def assertBraintreeResponseFailure(self, resp, msg=None):
-        self.assertEquals(resp['status'], "FAILURE")
+        self.assertEqual(resp['status'], "FAILURE")
 
     def testCardSupported(self):
         self.credit_card.number = "5019222222222222"
@@ -37,7 +37,7 @@ class BraintreePaymentsGatewayTestCase(TestCase):
 
     def testCardType(self):
         self.merchant.validate_card(self.credit_card)
-        self.assertEquals(self.credit_card.card_type, Visa)
+        self.assertEqual(self.credit_card.card_type, Visa)
 
     def testPurchase(self):
         resp = self.merchant.purchase(5, self.credit_card)
@@ -60,7 +60,7 @@ class BraintreePaymentsGatewayTestCase(TestCase):
         transaction_was_successful.connect(receive)
 
         resp = self.merchant.purchase(1, self.credit_card)
-        self.assertEquals(received_signals, [transaction_was_successful])
+        self.assertEqual(received_signals, [transaction_was_successful])
 
     def testPaymentUnSuccessfulSignal(self):
         received_signals = []
@@ -71,7 +71,7 @@ class BraintreePaymentsGatewayTestCase(TestCase):
         transaction_was_unsuccessful.connect(receive)
 
         resp = self.merchant.purchase(2000, self.credit_card)
-        self.assertEquals(received_signals, [transaction_was_unsuccessful])
+        self.assertEqual(received_signals, [transaction_was_unsuccessful])
 
     def testCreditCardExpired(self):
         credit_card = CreditCard(first_name="Test", last_name="User",
@@ -79,7 +79,7 @@ class BraintreePaymentsGatewayTestCase(TestCase):
                                  number="4000111111111115",
                                  verification_value="100")
         resp = self.merchant.purchase(2004, credit_card)
-        self.assertNotEquals(resp["status"], "SUCCESS")
+        self.assertNotEqual(resp["status"], "SUCCESS")
 
     def testAuthorizeAndCapture(self):
         resp = self.merchant.authorize(100, self.credit_card)
@@ -114,7 +114,7 @@ class BraintreePaymentsGatewayTestCase(TestCase):
             }
         resp = self.merchant.store(self.credit_card, options=options)
         self.assertBraintreeResponseSuccess(resp)
-        self.assertEquals(resp["response"].customer.credit_cards[0].expiration_date,
+        self.assertEqual(resp["response"].customer.credit_cards[0].expiration_date,
                           "%s/%s" % (self.credit_card.month,
                                     self.credit_card.year))
         self.assertTrue(getattr(resp["response"].customer.credit_cards[0], "customer_id"))
@@ -141,11 +141,11 @@ class BraintreePaymentsGatewayTestCase(TestCase):
         self.assertBraintreeResponseSuccess(resp)
         self.assertTrue(getattr(resp["response"].customer.credit_cards[0], "billing_address"))
         billing_address = resp["response"].customer.credit_cards[0].billing_address
-        self.assertEquals(billing_address.country_code_alpha2, "US")
-        self.assertEquals(billing_address.postal_code, "110011")
-        self.assertEquals(billing_address.street_address, "Street #1")
-        self.assertEquals(billing_address.extended_address, "House #2")
-        self.assertEquals(billing_address.locality, "Timbuktu")
+        self.assertEqual(billing_address.country_code_alpha2, "US")
+        self.assertEqual(billing_address.postal_code, "110011")
+        self.assertEqual(billing_address.street_address, "Street #1")
+        self.assertEqual(billing_address.extended_address, "House #2")
+        self.assertEqual(billing_address.locality, "Timbuktu")
 
     def testUnstore(self):
         options = {
@@ -174,7 +174,7 @@ class BraintreePaymentsGatewayTestCase(TestCase):
         resp = self.merchant.recurring(10, self.credit_card, options=options)
         self.assertBraintreeResponseSuccess(resp)
         subscription = resp["response"].subscription
-        self.assertEquals(subscription.status,
+        self.assertEqual(subscription.status,
                           braintree.Subscription.Status.Active)
 
     def testRecurring2(self):
@@ -191,7 +191,7 @@ class BraintreePaymentsGatewayTestCase(TestCase):
         resp = self.merchant.recurring(15, self.credit_card, options=options)
         self.assertBraintreeResponseSuccess(resp)
         subscription = resp["response"].subscription
-        self.assertEquals(subscription.price, 15)
+        self.assertEqual(subscription.price, 15)
 
     def testRecurring3(self):
         options = {
@@ -209,4 +209,4 @@ class BraintreePaymentsGatewayTestCase(TestCase):
         resp = self.merchant.recurring(20, self.credit_card, options=options)
         self.assertBraintreeResponseSuccess(resp)
         subscription = resp["response"].subscription
-        self.assertEquals(subscription.number_of_billing_cycles, 12)
+        self.assertEqual(subscription.number_of_billing_cycles, 12)

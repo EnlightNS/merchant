@@ -2,7 +2,7 @@ import mock
 try:
     import urllib2 as urllib
 except ImportError:
-    import urllib
+    import urllib.request, urllib.parse, urllib.error
 
 from django.conf import settings
 from django.test import TestCase
@@ -38,13 +38,13 @@ class AuthorizeNetAIMGatewayTestCase(TestCase):
 
     def testCardType(self):
         self.merchant.validate_card(self.credit_card)
-        self.assertEquals(self.credit_card.card_type, Visa)
+        self.assertEqual(self.credit_card.card_type, Visa)
 
     def testPurchase(self):
         resp = self.merchant.purchase(1, self.credit_card)
-        self.assertEquals(resp["status"], "SUCCESS")
+        self.assertEqual(resp["status"], "SUCCESS")
         # In test mode, the transaction ID from Authorize.net is 0
-        self.assertEquals(resp["response"].transaction_id, "0")
+        self.assertEqual(resp["response"].transaction_id, "0")
         self.assertTrue(isinstance(resp["response"], AuthorizeAIMResponse))
 
     def testPaymentSuccessfulSignal(self):
@@ -56,7 +56,7 @@ class AuthorizeNetAIMGatewayTestCase(TestCase):
         transaction_was_successful.connect(receive)
 
         resp = self.merchant.purchase(1, self.credit_card)
-        self.assertEquals(received_signals, [transaction_was_successful])
+        self.assertEqual(received_signals, [transaction_was_successful])
 
     def testPaymentUnSuccessfulSignal(self):
         received_signals = []
@@ -67,19 +67,19 @@ class AuthorizeNetAIMGatewayTestCase(TestCase):
         transaction_was_unsuccessful.connect(receive)
 
         resp = self.merchant.purchase(6, self.credit_card)
-        self.assertEquals(received_signals, [transaction_was_unsuccessful])
+        self.assertEqual(received_signals, [transaction_was_unsuccessful])
 
     def testCreditCardExpired(self):
         resp = self.merchant.purchase(8, self.credit_card)
-        self.assertNotEquals(resp["status"], "SUCCESS")
+        self.assertNotEqual(resp["status"], "SUCCESS")
 
     def testPurchaseURLError(self):
         with mock.patch('billing.gateways.authorize_net_gateway.urllib.urlopen') as mock_urlopen:
             error_text = "Something bad happened :("
             mock_urlopen.side_effect = urllib.URLError(error_text)
             resp = self.merchant.purchase(1, self.credit_card)
-            self.assertEquals(resp["status"], "FAILURE")
-            self.assertEquals(resp["response"].response_code, 5)
-            self.assertEquals(resp["response"].response_reason_code, '1')
+            self.assertEqual(resp["status"], "FAILURE")
+            self.assertEqual(resp["response"].response_code, 5)
+            self.assertEqual(resp["response"].response_reason_code, '1')
             self.assertTrue(error_text in resp["response"].response_reason_text)
             self.assertTrue(isinstance(resp["response"], MockAuthorizeAIMResponse))

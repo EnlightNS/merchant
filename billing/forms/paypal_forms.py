@@ -25,7 +25,7 @@ class MultipleItemsMixin(object):
         super(MultipleItemsMixin, self).__init__(**kwargs)
         has_multiple_items = False
         if 'initial' in kwargs:
-            for k, v in kwargs['initial'].items():
+            for k, v in list(kwargs['initial'].items()):
                 if INTEGER_FIELD_RE.match(k):
                     self.fields[k] = forms.IntegerField(
                         widget=forms.widgets.HiddenInput())

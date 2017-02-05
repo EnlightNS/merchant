@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
@@ -26,14 +26,14 @@ PAYMENT_GATEWAYS = {
 
 class Command(BaseCommand):
     help = 'Check for the required settings of billing app'
-    args = PAYMENT_GATEWAYS.keys()
+    args = list(PAYMENT_GATEWAYS.keys())
 
     def handle(self, *args, **kwargs):
-        check_for_gateway = args or PAYMENT_GATEWAYS.keys()
+        check_for_gateway = args or list(PAYMENT_GATEWAYS.keys())
 
         for gateway in check_for_gateway:
             if gateway not in PAYMENT_GATEWAYS:
-                raise CommandError('Invalid payment gateway option %s, valid gateway options are %s' % (gateway, PAYMENT_GATEWAYS.keys()))
+                raise CommandError('Invalid payment gateway option %s, valid gateway options are %s' % (gateway, list(PAYMENT_GATEWAYS.keys())))
             required_settings = PAYMENT_GATEWAYS[gateway]
 
             if isinstance(required_settings, dict):

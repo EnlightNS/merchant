@@ -1,7 +1,7 @@
 from billing.integrations.amazon_fps_integration import AmazonFpsIntegration as Integration
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-import urlparse
+import urllib.parse
 
 class FpsIntegration(Integration):
     def transaction(self, request):
@@ -13,9 +13,9 @@ class FpsIntegration(Integration):
         the sake of the example, we assume all the users
         get charged $100"""
         request_url = request.build_absolute_uri()
-        parsed_url = urlparse.urlparse(request_url)
+        parsed_url = urllib.parse.urlparse(request_url)
         query = parsed_url.query
-        dd = dict(map(lambda x: x.split("="), query.split("&")))
+        dd = dict([x.split("=") for x in query.split("&")])
         resp = self.purchase(100, dd)
         return HttpResponseRedirect("%s?status=%s" %(reverse("app_offsite_amazon_fps"),
                                 resp["status"]))

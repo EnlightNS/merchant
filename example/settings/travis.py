@@ -1,5 +1,5 @@
 import os
-from common import *
+from .common import *
 
 from formencode.variabledecode import variable_decode
 
@@ -7,7 +7,7 @@ DEBUG = False
 
 
 def get_merchant_settings():
-    env_dict = dict(filter(lambda x: x[0].startswith('MERCHANT'), os.environ.items()))
+    env_dict = dict([x for x in list(os.environ.items()) if x[0].startswith('MERCHANT')])
     return variable_decode(env_dict, dict_char='__')['MERCHANT']
 
 # MERCHANT SETTINGS

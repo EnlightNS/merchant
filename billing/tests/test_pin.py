@@ -35,9 +35,9 @@ class PinGatewayTestCase(TestCase):
     def testPurchaseSuccess(self):
         self.credit_card.number = VISA_SUCCESS
         resp = self.merchant.purchase(100, self.credit_card, options=OPTIONS)
-        self.assertEquals(resp["status"], "SUCCESS")
+        self.assertEqual(resp["status"], "SUCCESS")
 
     def testPurchaseFailure(self):
         self.credit_card.number = VISA_FAILURE
         resp = self.merchant.purchase(100.00, self.credit_card, options=OPTIONS)
-        self.assertEquals(resp["status"], "FAILURE")
+        self.assertEqual(resp["status"], "FAILURE")

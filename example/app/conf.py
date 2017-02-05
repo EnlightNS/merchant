@@ -144,8 +144,8 @@ INTEGRATION_INITIAL = {
 
     "ogone_payments": {
         'orderID': randomword(6),
-        'currency': u'INR',
-        'amount': u'10000',  # Rs. 100.00
+        'currency': 'INR',
+        'amount': '10000',  # Rs. 100.00
         'language': 'en_US',
         'exceptionurl': "{HOST}:8000/ogone_notify_handler".format(HOST=HOST),
         'declineurl': "{HOST}:8000/ogone_notify_handler".format(HOST=HOST),
@@ -154,8 +154,8 @@ INTEGRATION_INITIAL = {
     }
 }
 
-for k, v in GATEWAY_INITIAL.items():
+for k, v in list(GATEWAY_INITIAL.items()):
     v.update(COMMON_INITIAL)
 
-for k, v in INTEGRATION_INITIAL.items():
+for k, v in list(INTEGRATION_INITIAL.items()):
     v.update(COMMON_INITIAL)

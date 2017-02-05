@@ -60,7 +60,7 @@ class GlobalIrisTestBase(object):
 
     def get_order_id(self):
         # Need unique IDs for orders
-        return str(datetime.now()).replace(':', '_').replace(' ', '_').replace('.', '_') + str(random.randint(0, sys.maxint))
+        return str(datetime.now()).replace(':', '_').replace(' ', '_').replace('.', '_') + str(random.randint(0, sys.maxsize))
 
 
 @skipIf(not settings.MERCHANT_SETTINGS.get("global_iris", None), "gateway not configured")
@@ -94,7 +94,7 @@ class GlobalIrisGatewayTestCase(BetterXMLCompareMixin, GlobalIrisTestBase, TestC
 
         xml = gateway.build_xml(data)
 
-        self.assertXMLEqual(u"""<?xml version="1.0" encoding="UTF-8" ?>
+        self.assertXMLEqual("""<?xml version="1.0" encoding="UTF-8" ?>
 <request timestamp="20010427124523" type="auth">
   <merchantid>thestore</merchantid>
   <account>theaccount</account>
@@ -135,7 +135,7 @@ class GlobalIrisGatewayTestCase(BetterXMLCompareMixin, GlobalIrisTestBase, TestC
 
         xml2 = gateway.build_xml(data)
 
-        self.assertXMLEqual(u"""<?xml version="1.0" encoding="UTF-8" ?>
+        self.assertXMLEqual("""<?xml version="1.0" encoding="UTF-8" ?>
 <request timestamp="20010427124523" type="auth">
   <merchantid>thestore</merchantid>
   <account>theaccount</account>
