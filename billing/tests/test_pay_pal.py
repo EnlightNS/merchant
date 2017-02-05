@@ -1,6 +1,6 @@
 import datetime
 try:
-    from urlparse import urlparse
+    from urllib.parse import urlparse
 except ImportError:
     # Python3
     from urllib.parse import urlparse
@@ -58,13 +58,13 @@ class PayPalGatewayTestCase(TestCase):
 
     def testCardType(self):
         self.merchant.validate_card(self.credit_card)
-        self.assertEquals(self.credit_card.card_type, Visa)
+        self.assertEqual(self.credit_card.card_type, Visa)
 
     def testPurchase(self):
         resp = self.merchant.purchase(1, self.credit_card,
                                       options=fake_options)
-        self.assertEquals(resp["status"], "SUCCESS")
-        self.assertNotEquals(resp["response"].correlationid, "0")
+        self.assertEqual(resp["status"], "SUCCESS")
+        self.assertNotEqual(resp["response"].correlationid, "0")
         self.assertTrue(isinstance(resp["response"], PayPalNVP))
 
     def testPaymentSuccessfulSignal(self):
@@ -77,7 +77,7 @@ class PayPalGatewayTestCase(TestCase):
 
         resp = self.merchant.purchase(1, self.credit_card,
                                       options=fake_options)
-        self.assertEquals(received_signals, [transaction_was_successful])
+        self.assertEqual(received_signals, [transaction_was_successful])
 
     def testPaymentUnSuccessfulSignal(self):
         received_signals = []
@@ -89,12 +89,12 @@ class PayPalGatewayTestCase(TestCase):
 
         resp = self.merchant.purchase(105.02, self.credit_card,
                                       options=fake_options)
-        self.assertEquals(received_signals, [transaction_was_unsuccessful])
+        self.assertEqual(received_signals, [transaction_was_unsuccessful])
 
     def testCreditCardExpired(self):
         resp = self.merchant.purchase(105.02, self.credit_card,
                                       options=fake_options)
-        self.assertNotEquals(resp["status"], "SUCCESS")
+        self.assertNotEqual(resp["status"], "SUCCESS")
 
 
 @skipIf(not settings.MERCHANT_SETTINGS.get("pay_pal", None), "gateway not configured")
@@ -129,9 +129,9 @@ class PayPalWebsiteStandardsTestCase(TestCase):
         form_action_url = dom.getElementsByTagName('form')[0].attributes['action'].value
         parsed = urlparse(form_action_url)
 
-        self.assertEquals(parsed.scheme, 'https')
-        self.assertEquals(parsed.netloc, 'www.sandbox.paypal.com')
-        self.assertEquals(parsed.path, '/cgi-bin/webscr')
+        self.assertEqual(parsed.scheme, 'https')
+        self.assertEqual(parsed.netloc, 'www.sandbox.paypal.com')
+        self.assertEqual(parsed.path, '/cgi-bin/webscr')
 
     def testRenderForm(self):
         tmpl = Template("""
@@ -168,4 +168,4 @@ class PayPalWebsiteStandardsTestCase(TestCase):
         self.assertFormIsCorrect(form, fields)
 
     def testIPNURLSetup(self):
-        self.assertEquals(reverse("paypal-ipn"), "/paypal-ipn-url/")
+        self.assertEqual(reverse("paypal-ipn"), "/paypal-ipn-url/")

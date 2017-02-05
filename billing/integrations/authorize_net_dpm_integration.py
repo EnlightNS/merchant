@@ -7,12 +7,12 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.decorators import method_decorator
 from django.http import HttpResponseForbidden
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 import hashlib
 import hmac
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 csrf_exempt_m = method_decorator(csrf_exempt)
 require_POST_m = method_decorator(require_POST)
@@ -76,29 +76,24 @@ class AuthorizeNetDpmIntegration(Integration):
                                             type="sale",
                                             response=post_data)
             redirect_url = "%s?%s" % (request.build_absolute_uri(reverse("authorize_net_success_handler")),
-                                     urllib.urlencode({"response": result,
+                                     urllib.parse.urlencode({"response": result,
                                                        "transaction_id": request.POST["x_trans_id"]}))
             return render_to_response("billing/authorize_net_relay_snippet.html",
                                       {"redirect_url": redirect_url})
         redirect_url = "%s?%s" % (request.build_absolute_uri(reverse("authorize_net_failure_handler")),
-                                 urllib.urlencode({"response": result}))
+                                 urllib.parse.urlencode({"response": result}))
         transaction_was_unsuccessful.send(sender=self,
                                           type="sale",
                                           response=post_data)
-        return render_to_response("billing/authorize_net_relay_snippet.html",
-                                  {"redirect_url": redirect_url})
+        return render(request, 'billing/authorize_net_relay_snippet.html', {"redirect_url": redirect_url})
 
     def authorize_net_success_handler(self, request):
         response = request.GET
-        return render_to_response("billing/authorize_net_success.html",
-                                  {"response": response},
-                                  context_instance=RequestContext(request))
+        return render(request, 'billing/authorize_net_success.html', {"response": response, })
 
     def authorize_net_failure_handler(self, request):
         response = request.GET
-        return render_to_response("billing/authorize_net_failure.html",
-                                  {"response": response},
-                                  context_instance=RequestContext(request))
+        return render(request, 'billing/authorize_net_failure.html', {"response": response, })
 
     def get_urls(self):
         urlpatterns = patterns('',

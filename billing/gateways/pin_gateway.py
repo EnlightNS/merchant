@@ -95,7 +95,7 @@ class PinGateway(Gateway):
             card.last_name = credit_card.last_name
             card.save()
             charge = PinCharge(card=card)
-            for key, value in response.items():
+            for key, value in list(response.items()):
                 if key != 'card':
                     setattr(charge, key, value)
             charge.save()

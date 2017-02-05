@@ -1,5 +1,5 @@
 try:
-    from urlparse import urlparse
+    from urllib.parse import urlparse
 except ImportError:
     from urllib.parse import urlparse
 from xml.dom import minidom
@@ -46,9 +46,9 @@ class WorldPayTestCase(TestCase):
         form_action_url = dom.getElementsByTagName('form')[0].attributes['action'].value
         parsed = urlparse(form_action_url)
 
-        self.assertEquals(parsed.scheme, 'https')
-        self.assertEquals(parsed.netloc, 'select-test.worldpay.com')
-        self.assertEquals(parsed.path, '/wcc/purchase')
+        self.assertEqual(parsed.scheme, 'https')
+        self.assertEqual(parsed.netloc, 'select-test.worldpay.com')
+        self.assertEqual(parsed.path, '/wcc/purchase')
 
     def testFormGen(self):
         # Since the secret key cannot be distributed

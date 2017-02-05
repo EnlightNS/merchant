@@ -25,34 +25,34 @@ class StripeGatewayTestCase(TestCase):
     def testCardType(self):
         self.credit_card.number = '4242424242424242'
         self.merchant.validate_card(self.credit_card)
-        self.assertEquals(self.credit_card.card_type, Visa)
+        self.assertEqual(self.credit_card.card_type, Visa)
 
     def testPurchase(self):
         resp = self.merchant.purchase(1, self.credit_card)
-        self.assertEquals(resp["status"], "SUCCESS")
+        self.assertEqual(resp["status"], "SUCCESS")
 
     def testPurchaseDecimalAmount(self):
         resp = self.merchant.purchase(1.99, self.credit_card)
-        self.assertEquals(resp["status"], "SUCCESS")
+        self.assertEqual(resp["status"], "SUCCESS")
 
     def testStoreMissingCustomer(self):
         self.assertRaises(TypeError, self.merchant.store)
 
     def testStoreWithoutBillingAddress(self):
         resp = self.merchant.store(self.credit_card)
-        self.assertEquals(resp["status"], "SUCCESS")
-        self.assertEquals(resp["response"]["sources"]["data"][0].exp_month,
+        self.assertEqual(resp["status"], "SUCCESS")
+        self.assertEqual(resp["response"]["sources"]["data"][0].exp_month,
                           self.credit_card.month)
-        self.assertEquals(resp["response"]["sources"]["data"][0].exp_year,
+        self.assertEqual(resp["response"]["sources"]["data"][0].exp_year,
                           self.credit_card.year)
         self.assertTrue(getattr(resp["response"], "id"))
         self.assertTrue(getattr(resp["response"], "created"))
 
     def testUnstore(self):
         resp = self.merchant.store(self.credit_card)
-        self.assertEquals(resp["status"], "SUCCESS")
+        self.assertEqual(resp["status"], "SUCCESS")
         response = self.merchant.unstore(resp["response"].id)
-        self.assertEquals(response["status"], "SUCCESS")
+        self.assertEqual(response["status"], "SUCCESS")
 
     def testRecurring1(self):
         plan_id = "test_plan"
@@ -67,26 +67,26 @@ class StripeGatewayTestCase(TestCase):
                 id=plan_id)
         options = {"plan_id": plan_id}
         resp = self.merchant.recurring(self.credit_card, options=options)
-        self.assertEquals(resp["status"], "SUCCESS")
+        self.assertEqual(resp["status"], "SUCCESS")
         subscription = resp["response"].subscriptions["data"][0]
-        self.assertEquals(subscription.status, "active")
+        self.assertEqual(subscription.status, "active")
 
     def testCredit(self):
         resp = self.merchant.purchase(1, self.credit_card)
-        self.assertEquals(resp["status"], "SUCCESS")
+        self.assertEqual(resp["status"], "SUCCESS")
         identification = resp["response"].id
         resp = self.merchant.credit(identification=identification)
-        self.assertEquals(resp["status"], "SUCCESS")
+        self.assertEqual(resp["status"], "SUCCESS")
 
     def testAuthorizeAndCapture(self):
         resp = self.merchant.authorize(100, self.credit_card)
-        self.assertEquals(resp["status"], "SUCCESS")
+        self.assertEqual(resp["status"], "SUCCESS")
         response = self.merchant.capture(50, resp["response"].id)
-        self.assertEquals(response["status"], "SUCCESS")
+        self.assertEqual(response["status"], "SUCCESS")
 
     def testPurchaseWithToken(self):
         # Somewhat similar to capture but testing for the
         # purpose of the stripe integration
         resp = self.merchant.authorize(1, self.credit_card)
         resp = self.merchant.purchase(1, resp["response"].id)
-        self.assertEquals(resp["status"], "SUCCESS")
+        self.assertEqual(resp["status"], "SUCCESS")

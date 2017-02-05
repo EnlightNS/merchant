@@ -17,7 +17,7 @@ class PaylaneTransaction(models.Model):
     acquirer_description = models.CharField(max_length=300, blank=True)
 
     def __unicode__(self):
-        return u'Transaction for %s (%s)' % (self.customer_name, self.customer_email)
+        return 'Transaction for %s (%s)' % (self.customer_name, self.customer_email)
 
     class Meta:
         app_label = __name__.split(".")[0]
@@ -29,7 +29,7 @@ class PaylaneAuthorization(models.Model):
     transaction = models.OneToOneField(PaylaneTransaction)
 
     def __unicode__(self):
-        return u'Authorization: %s' % (self.sale_authorization_id)
+        return 'Authorization: %s' % (self.sale_authorization_id)
 
     class Meta:
         app_label = __name__.split(".")[0]

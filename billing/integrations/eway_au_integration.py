@@ -50,7 +50,7 @@ translation = {
     'AuthorisationCode': 'authorisation_code',
     'AccessCode': 'access_code',
 }
-translation.update(dict(zip(translation.values(), translation.keys())))
+translation.update(dict(list(zip(list(translation.values()), list(translation.keys())))))
 
 
 def translate(original):
@@ -63,7 +63,7 @@ def translate(original):
     Untranslatable keys are not included in returned dict.
     """
     translated = {}
-    for k, v in translation.items():
+    for k, v in list(translation.items()):
         try:
             value = original[k]
         except KeyError:
@@ -73,7 +73,7 @@ def translate(original):
 
 
 def attr_update(object_, dict_):
-    for k, v in dict_.items():
+    for k, v in list(dict_.items()):
         setattr(object_, k, v)
 
 

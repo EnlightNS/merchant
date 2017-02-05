@@ -3,9 +3,8 @@ from billing import Integration, IntegrationNotConfigured
 from django.conf import settings
 
 from django.conf.urls import patterns, url
-from django.template import RequestContext
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 
 from django_ogone.ogone import Ogone
 from django_ogone.status_codes import get_status_category, get_status_description, \
@@ -73,19 +72,13 @@ class OgonePaymentsIntegration(Integration):
             return HttpResponse('signature validation failed!')
 
     def ogone_success_handler(self, request, response=None, description=''):
-        return render_to_response("billing/ogone_success.html",
-                                  {"response": response, "message": description},
-                                  context_instance=RequestContext(request))
+        return render(request, 'billing/ogone_success.html', {"response": response, "message": description})
 
     def ogone_failure_handler(self, request, response=None, description=''):
-        return render_to_response("billing/ogone_failure.html",
-                                  {"response": response, "message": description},
-                                  context_instance=RequestContext(request))
+        return render(request, 'billing/ogone_failure.html', {"response": response, "message": description})
 
     def ogone_cancel_handler(self, request, response=None, description=''):
-        return render_to_response("billing/ogone_cancel.html",
-                                  {"response": response, "message": description},
-                                  context_instance=RequestContext(request))
+        return render(request, 'billing/ogone_cancel.html', {"response": response, "message": description})
 
     def get_urls(self):
         urlpatterns = patterns('',
@@ -94,7 +87,7 @@ class OgonePaymentsIntegration(Integration):
         return urlpatterns
 
     def add_fields(self, params):
-        for (key, val) in params.items():
+        for (key, val) in list(params.items()):
             if isinstance(val, dict):
                 new_params = {}
                 for k in val:

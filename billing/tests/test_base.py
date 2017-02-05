@@ -12,7 +12,7 @@ class MerchantTestCase(TestCase):
     @skipIf(not settings.MERCHANT_SETTINGS.get("authorize_net", None), "gateway not configured")
     def testCorrectClassLoading(self):
         gateway = get_gateway("authorize_net")
-        self.assertEquals(gateway.display_name, "Authorize.Net")
+        self.assertEqual(gateway.display_name, "Authorize.Net")
 
     def testSettingAttributes(self):
         self.assertTrue(getattr(settings, "MERCHANT_SETTINGS", None) != None)

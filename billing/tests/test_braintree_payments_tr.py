@@ -29,7 +29,7 @@ class BraintreePaymentsIntegrationTestCase(TestCase):
         self.bp.add_fields(fields)
 
     def testFormFields(self):
-        self.assertEquals(self.bp.fields, {"transaction__type": "sale",
+        self.assertEqual(self.bp.fields, {"transaction__type": "sale",
                                            "transaction__amount": "10.00",
                                            "transaction__order_id": 1,
                                            "transaction__customer__first_name": "John",

@@ -44,7 +44,7 @@ class BitcoinGateway(Gateway):
 
     def get_transactions_by_address(self, address):
         all_txns = self.get_transactions()
-        return filter(lambda txn: txn.address == address, all_txns)
+        return [txn for txn in all_txns if txn.address == address]
 
     def get_txns_sum(self, txns):
         return sum(txn.amount for txn in txns)

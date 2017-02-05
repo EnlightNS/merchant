@@ -1,6 +1,7 @@
 try:
-    from urllib2 import Request, urlopen, URLError
-    from urllib import urlencode
+    from urllib.request import Request, urlopen
+    from urllib.error import URLError
+    from urllib.parse import urlencode
 except ImportError:
     from urllib.request import Request, urlopen, URLError
     from urllib.parse import urlencode
@@ -179,7 +180,7 @@ class AuthorizeNetGateway(Gateway):
         post['encap_char'] = ENCAP_CHAR
 
         post.update(parameters)
-        return urlencode(dict(('x_%s' % (k), v) for k, v in post.items()))
+        return urlencode(dict(('x_%s' % (k), v) for k, v in list(post.items())))
 
     # this shoud be moved to a requests lib file
     def request(self, url, data, headers=None):

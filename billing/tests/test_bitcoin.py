@@ -29,7 +29,7 @@ class BitcoinGatewayTestCase(TestCase):
 
     def testPurchase(self):
             resp = self.merchant.purchase(TEST_AMOUNT, self.address)
-            self.assertEquals(resp['status'], 'SUCCESS')
+            self.assertEqual(resp['status'], 'SUCCESS')
 
     def testPaymentSuccessfulSignal(self):
             received_signals = []
@@ -40,7 +40,7 @@ class BitcoinGatewayTestCase(TestCase):
             transaction_was_successful.connect(receive)
 
             self.merchant.purchase(TEST_AMOUNT, self.address)
-            self.assertEquals(received_signals, [transaction_was_successful])
+            self.assertEqual(received_signals, [transaction_was_successful])
 
     def testPaymentUnSuccessfulSignal(self):
             received_signals = []
@@ -51,4 +51,4 @@ class BitcoinGatewayTestCase(TestCase):
             transaction_was_unsuccessful.connect(receive)
 
             self.merchant.purchase(TEST_AMOUNT/2, self.address)
-            self.assertEquals(received_signals, [transaction_was_unsuccessful])
+            self.assertEqual(received_signals, [transaction_was_unsuccessful])

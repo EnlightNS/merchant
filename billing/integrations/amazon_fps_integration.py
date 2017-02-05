@@ -12,11 +12,12 @@ from billing.signals import (transaction_was_successful,
                              transaction_was_unsuccessful)
 from django.core.urlresolvers import reverse
 from billing.models import AmazonFPSResponse
+import collections
 try:
-    from urlparse import urlparse
+    from urllib.parse import urlparse
 except ImportError:
     from urllib.parse import urlparse
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import time
 import datetime
 
@@ -160,16 +161,16 @@ class AmazonFpsIntegration(Integration):
         if not resp.VerifySignatureResult.VerificationStatus == "Success":
             return HttpResponseForbidden()
 
-        data = dict(map(lambda x: x.split("="), request.body.split("&")))
-        for (key, val) in data.items():
-            data[key] = urllib.unquote_plus(val)
+        data = dict([x.split("=") for x in request.body.split("&")])
+        for (key, val) in list(data.items()):
+            data[key] = urllib.parse.unquote_plus(val)
         if AmazonFPSResponse.objects.filter(transactionId=data["transactionId"]).count():
             resp = AmazonFPSResponse.objects.get(transactionId=data["transactionId"])
         else:
             resp = AmazonFPSResponse()
-        for (key, val) in data.items():
+        for (key, val) in list(data.items()):
             attr_exists = hasattr(resp, key)
-            if attr_exists and not callable(getattr(resp, key, None)):
+            if attr_exists and not isinstance(getattr(resp, key, None), collections.Callable):
                 if key == "transactionDate":
                     val = datetime.datetime(*time.localtime(float(val))[:6])
                 setattr(resp, key, val)

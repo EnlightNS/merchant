@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 
 VERSION = '0.3'
 
@@ -64,12 +64,12 @@ def find_package_data(
             if os.path.isdir(fn):
                 bad_name = False
                 for pattern in exclude_directories:
-                    if (fnmatchcase(name, pattern)
-                        or fn.lower() == pattern.lower()):
+                    if fnmatchcase(name, pattern) or fn.lower() == pattern.lower():
                         bad_name = True
                         if show_ignored:
-                            print("Directory %s ignored by pattern %s"
-                                  % (fn, pattern), file=sys.stderr)
+                            msg = "Directory {0} ignored by pattern {1}".format(
+                                fn, pattern)
+                            print(msg, file=sys.stderr)
                         break
                 if bad_name:
                     continue
@@ -86,8 +86,7 @@ def find_package_data(
                 # is a file
                 bad_name = False
                 for pattern in exclude:
-                    if (fnmatchcase(name, pattern)
-                        or fn.lower() == pattern.lower()):
+                    if fnmatchcase(name, pattern) or fn.lower() == pattern.lower():
                         bad_name = True
                         if show_ignored:
                             print("File %s ignored by pattern %s"

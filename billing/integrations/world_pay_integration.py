@@ -89,7 +89,7 @@ class WorldPayIntegration(Integration):
             'ipAddress': 'ip_address',
             }
 
-        for (key, val) in resp_fields.items():
+        for (key, val) in list(resp_fields.items()):
             data[val] = post_data.get(key, '')
 
         try:
