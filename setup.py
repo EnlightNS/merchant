@@ -1,6 +1,6 @@
 
 
-VERSION = '0.3'
+VERSION = '0.3py3'
 
 import os
 import sys
